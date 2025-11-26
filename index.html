@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="referrer" content="no-referrer">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🗻</text></svg>">
+    <title>2026 門前坐地技術研討團之旅</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --accent: #e74c3c;
+            --bg: #f0f2f5;
+            --card-bg: #ffffff;
+            --text-main: #1f2937;
+            --text-sub: #6b7280;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--bg);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            line-height: 1.5;
+            padding-bottom: 120px;
+        }
+
+        /* --- Header --- */
+        header {
+            position: relative;
+            height: 340px;
+            /* 使用天上山公園照片作為封面 */
+            background-image: url('https://images.weserv.nl/?url=www.mtfujiropeway.jp/cqotof0000000con-img/main_panel_pc20220330_3.jpg&w=1000&q=80');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            display: flex;
+            align-items: flex-end;
+        }
+        header::after {
+            content: ''; position: absolute; inset: 0;
+            background: linear-gradient(to bottom, rgba(0,0,0,0) 40%, rgba(0,0,0,0.8) 100%);
+        }
+        .header-content {
+            position: relative; z-index: 10; width: 100%; padding: 20px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+        h1 { margin: 0; font-size: 28px; font-weight: 800; line-height: 1.2; }
+        .subtitle { 
+            font-size: 13px; margin-top: 8px; font-weight: 500; 
+            background: rgba(255,255,255,0.2); backdrop-filter: blur(4px);
+            padding: 4px 12px; border-radius: 20px; display: inline-block;
+        }
+
+        /* --- Container --- */
+        .container { max-width: 800px; margin: 0 auto; padding: 20px 15px; }
+
+        /* --- Day Sections --- */
+        .day-section { display: none; animation: fadeUp 0.4s ease; }
+        .day-section.active { display: block; }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .day-header {
+            display: flex; justify-content: space-between; align-items: baseline;
+            margin-bottom: 20px; padding-left: 12px; border-left: 5px solid var(--primary);
+        }
+        .day-title { font-size: 22px; font-weight: 800; color: var(--primary); }
+        .day-date { font-size: 14px; color: var(--text-sub); font-weight: 600; }
+
+        /* --- Timeline --- */
+        .timeline { position: relative; padding-left: 28px; }
+        .timeline::before {
+            content: ''; position: absolute; left: 6px; top: 10px; bottom: 0;
+            width: 2px; background: #e5e7eb; border-radius: 2px;
+        }
+
+        .event { position: relative; margin-bottom: 30px; }
+        .event:last-child { margin-bottom: 0; }
+
+        .dot {
+            position: absolute; left: -28px; top: 18px;
+            width: 14px; height: 14px;
+            background: white; border: 3px solid var(--primary); border-radius: 50%;
+            z-index: 2; box-shadow: 0 0 0 3px var(--bg);
+        }
+        .event.highlight .dot { border-color: var(--accent); background: var(--accent); }
+        .event.optional .dot { border-color: #aaa; background: #eee; }
+
+        .card {
+            background: var(--card-bg); border-radius: 16px; padding: 16px;
+            box-shadow: var(--shadow); border: 1px solid rgba(0,0,0,0.02);
+            transition: transform 0.2s;
+        }
+        
+        .tag-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+        .time-badge {
+            font-size: 12px; font-weight: 700; color: #4b5563;
+            background: #f3f4f6; padding: 4px 8px; border-radius: 6px;
+        }
+        .type-badge {
+            font-size: 10px; font-weight: 700; text-transform: uppercase;
+            padding: 3px 6px; border-radius: 4px; color: white; background: #999;
+        }
+        .type-spot { background: #3498db; }
+        .type-food { background: #f39c12; }
+        .type-stay { background: #8e44ad; }
+        .type-move { background: #27ae60; }
+        .type-shop { background: #e67e22; }
+
+        .card h3 { margin: 0 0 6px 0; font-size: 17px; font-weight: 700; color: #111827; line-height: 1.4; }
+        .card p { margin: 0 0 8px 0; font-size: 14px; color: #4b5563; }
+        
+        .details { border-top: 1px dashed #eee; padding-top: 8px; margin-top: 8px; }
+        .detail-item { font-size: 13px; color: #666; display: flex; margin-bottom: 3px; }
+        .detail-item::before { content: '•'; margin-right: 6px; color: var(--primary); }
+
+        .change-box {
+            background: #fff5f5; border-left: 3px solid var(--accent);
+            padding: 8px 12px; margin: 10px 0; border-radius: 0 6px 6px 0;
+        }
+        .old-plan { text-decoration: line-through; color: #999; font-size: 12px; display: block; }
+        .new-plan { color: var(--accent); font-weight: bold; font-size: 13px; display: block; margin-top: 2px; }
+
+        .card.optional { opacity: 0.7; background: #fafafa; border: 1px dashed #ccc; }
+        .card.optional h3 { color: #777; }
+
+        /* 圖片設定 */
+        .img-box {
+            margin-top: 12px; border-radius: 10px; overflow: hidden; height: 160px;
+            background-color: white; position: relative;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .img-box img { 
+            width: 100%; height: 100%; object-fit: cover; 
+            display: block; transition: transform 0.5s;
+        }
+        /* 針對透明背景或需要完整顯示的圖片 */
+        .img-box.contain img { object-fit: contain; height: 90%; }
+        .img-box:hover img { transform: scale(1.03); }
+
+        /* 按鈕 */
+        .btn-map {
+            display: flex; align-items: center; justify-content: center;
+            margin-top: 12px; width: 100%; padding: 10px;
+            background: #eff6ff; color: #2563eb;
+            font-size: 13px; font-weight: 600; text-decoration: none; border-radius: 10px;
+        }
+        .btn-map::before { content: '📍'; margin-right: 5px; }
+
+        /* 緊急聯絡 */
+        .emergency-section {
+            margin-top: 30px; padding-top: 20px; border-top: 2px solid #eee;
+        }
+        .emergency-title { font-size: 16px; font-weight: 800; color: #c0392b; margin-bottom: 10px; display: flex; align-items: center; }
+        .emergency-title::before { content: '🆘'; margin-right: 8px; }
+        .emergency-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .sos-btn {
+            background: #fff; border: 1px solid #ddd; padding: 10px; border-radius: 10px;
+            text-align: center; text-decoration: none; color: #333; font-size: 13px; font-weight: 600;
+            display: flex; flex-direction: column; align-items: center;
+        }
+        .sos-btn span { font-size: 18px; font-weight: 800; color: #c0392b; display: block; margin-bottom: 2px; }
+
+        /* --- 底部選單 --- */
+        .bottom-nav {
+            position: fixed; bottom: 20px; left: 15px; right: 15px;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            border-radius: 24px; padding: 8px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            display: flex; gap: 8px; z-index: 1000;
+            border: 1px solid rgba(255,255,255,0.5);
+            max-width: 800px; margin: 0 auto;
+        }
+
+        .nav-scroll {
+            display: flex; gap: 5px; flex: 1; overflow-x: auto;
+            scrollbar-width: none; align-items: center; padding: 0 5px;
+        }
+        .nav-item {
+            flex: 0 0 auto; padding: 8px 14px; border-radius: 16px;
+            font-size: 13px; font-weight: 600; color: #6b7280;
+            cursor: pointer; transition: all 0.2s; text-align: center;
+        }
+        .nav-item.active { background: var(--primary); color: white; box-shadow: 0 2px 8px rgba(44, 62, 80, 0.3); }
+
+        .sheet-btn {
+            flex: 0 0 auto; padding: 8px 16px; border-radius: 16px;
+            background: #27ae60; color: white;
+            font-size: 13px; font-weight: 700; text-decoration: none;
+            display: flex; align-items: center; white-space: nowrap;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="header-content">
+        <h1>2026 門前坐地<br>技術研討團之旅</h1>
+        <div class="subtitle">Dean & Carol & Kimo & Aaron</div>
+    </div>
+</header>
+
+<div class="container">
+
+    <div id="day1" class="day-section active">
+        <div class="day-header"><span class="day-title">Day 1</span><span class="day-date">1/16 (Fri)</span></div>
+        <div class="timeline">
+            <div class="event">
+                <div class="dot"></div>
+                <div class="card">
+                    <div class="tag-row"><span class="time-badge">09:30</span><span class="type-badge type-move">出發</span></div>
+                    <h3>住家 ➝ 小港機場</h3>
+                    <p>各自前往機場集合</p>
+                </div>
+            </div>
+            <div class="event">
+                <div class="dot"></div>
+                <div class="card">
+                    <div class="tag-row"><span class="time-badge">11:30</span><span class="type-badge type-move">飛行</span></div>
+                    <h3>航班 UA 838</h3>
+                    <p>高雄 (KHH) ➝ 成田機場 (NRT) T1</p>
+                    <div class="details"><div class="detail-item">抵達時間：15:55</div></div>
+                </div>
+            </div>
+            <div class="event">
+                <div class="dot"></div>
+                <div class="card">
+                    <div class="tag-row"><span class="time-badge">16:30</span><span class="type-badge type-move">接送</span></div>
+                    <h3>機場接送 ➝ 新宿</h3>
+                    <div class="details"><div class="detail-item">費用：NTD 3,500 (一車)</div></div>
+                </div>
+            </div>
+            <div class="event">
+                <div class="dot"></div>
+                <div class="card">
+                    <div class="tag-row"><span class="time-badge">Check-in</span><span class="type-badge type-stay">住宿</span></div>
+                    <h3>新宿格拉麗斯飯店</h3>
+                    <p>Hotel Gracery Shinjuku (哥吉拉飯店)</p>
+                    <div class="img-box"><img src="https://images.weserv.nl/?url=www.nippon.com/hk/ncommon/contents/news/2838039/2838039.jpg&w=800&h=400&fit=cover" alt="Godzilla Hotel"></div>
+                    <a href="https://www.google.com/maps/search/?api=1&query=Hotel+Gracery+Shinjuku" target="_blank" class="btn-map">Google Maps 導航</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="day2" class="day-section">
+        <div class="day-header"><span class="day-title">Day 2</span><span class="day-date">1/17 (Sat)</span></div>
+        <div class="timeline">
+            <div class="event">
+                <div class="dot"></div>
+                <div class="card">
+                    <div class="tag-row"><span class="time-badge">08:30</span><span class="type-badge type-move">鐵路</span></div>
+                    <h3>新宿站 ➝ 大月站</h3>
+                    <p>搭乘特急甲斐路 / 富士迴遊</p>
+                    <div class="details">
+                        <div class="detail-item">早餐：買超商火車上吃</div>
+                        <div class="detail-item">票價：¥2,360/人</div>
+                    </div>
+                </div>
+            </div>
+            <div class="event">
+                <div class="dot"></div>
+                <div class="card">
+                    <div class="tag-row"><span class="time-badge">09:35</span><span class="type-badge type-move">租車</span></div>
+                    <h3>Toyota Rent-A-Car 大月站前</h3>
+                    <p>取車手續，預計 10:00 出發</p>
+                    <div class="img-box"><img src="https://images.weserv.nl/?url=photo.8891.com.tw/nc/newcar/article/2022/01/14/1642146787024180_1400_0.jpg&w=800&h=400&fit=cover" alt="Toyota Rental"></div>
+                    <a href="https://www.google.com/maps/search/?api=1&query=Toyota+Rent+a+Car+Otsuki" target="_blank" class="btn-map">Google Maps 導航</a>
+                </div>
+            </div>
+            <div class="event">
+                <div class="dot"></div>
+                <div class="card">
+                    <div class="tag-row"><span class="time-badge">10:30</span><span class="type-badge type-spot">景點</span></div>
+                    <h3>山梨縣立磁浮列車展示中心</h3>
+                    <p>體驗時速 500km 的震撼 (停留2小時)</p>
+                    <div class="img-box"><img src="https://images.weserv.nl/?url=www.linear-museum.pref.yamanashi.jp/top_img016.jpg&w=800&h=400&fit=cover&a=top" alt="Maglev Head"></div>
+                    <a href="https://www.google.com/maps/search/?api=1&query=Yamanashi+Prefectural+Maglev+Exhibition+Center" target="_blank" class="btn-map">Google Maps 導航</a>
+                </div>
+            </div>
+            <div class="event">
+                <div class="dot"></div>
+                <div class="card">
+                    <div class="tag-row"><span class="time-badge">13:00</span><span class="type-badge type-food">午餐</span></div>
+                    <h3>午餐時間</h3>
+                    <p>路途中挑選 / 富士山車站周邊</p>
+                </div>
+            </div>
+            <div class="event">
+                <div class="dot"></div>
+                <div class="card">
+                    <div class="tag-row"><span class="time-badge">14:00</span><span class="type-badge type-spot">健走</span></div>
+                    <h3>新倉山淺間公園</h3>
+                    <p>經典五重塔與富士山 (健走2小時)</p>
+                    <div class="img-box"><img src="https://images.weserv.nl/?url=chureito-pagoda.com/wp-content/uploads/2017/05/cherrytree-chureito-pagoda.jpg&w=800&h=400&fit=cover" alt="Chureito"></div>
+                    <a href="https://www.google.com/maps/search/?api=1&query=Chureito+Pagoda" target="_blank" class="btn-map">Google Maps 導航</a>
+                </div>
+            </div>
+            <div class="event">
+                <div class="dot"></div>
+                <div class="card">
+                    <div class="tag-row"><span class="time-badge">16:00</span><span class="type-badge type-spot">拍照</span></div>
+                    <h3>日川時計店 (下吉田)</h3>
+                    <p>本町二丁目商店街拍攝</p>
+                    <div class="img-box"><img src="https://images.weserv.nl/?url=ak-d.tripcdn.com/images/1mi4n224x8unzmcu93B14_R_600_400_R5_Q90.jpg&w=800&h=400&fit=cover" alt="Shimoyoshida"></div>
+                    <a href="https://www.google.com/maps/search/?api=1&query=Hikawa+Clock+Shop+Shimoyoshida" target="_blank" class="btn-map">Google Maps 導航</a>
+                </div>
+            </div>
+            <div class="event">
+                <div class="dot"></div>
+                <div class="card">
+                    <div class="tag-row"><span class="time-badge">Stay</span><span class="type-badge type-stay">住宿</span></div>
+                    <h3>美富士園 (Hotel Mifujien)</h3>
+                    <p>河口湖畔溫泉飯店</p>
+                    <div class="details"><div class="detail-item">晚餐：19:00 開車至車站附近吃</div></div>
+                    <a href="https://www.google.com/maps/search/?api=1&query=Hotel+Mifujien" target="_blank" class="btn-map">Google Maps 導航</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="day3" class="day-section">
+        <div class="day-header"><span class="day-title">Day 3</span><span class="day-date">1/18 (Sun)</span></div>
+        <div class="timeline">
+            <div class="event">
+                <div class="dot"></div>
+                <div class="card">
+                    <div class="tag-row"><span class="time-badge">08:30</span><span class="type-badge type-spot">拍照</span></div>
+                    <h3>河口湖晨間街拍</h3>
+                    <p>Lawson 站前 ➝ 河口湖站 ➝ 7-11 東店 ➝ 金鳥居</p>
+                    <a href="https://www.google.com/maps/search/?api=1&query=Lawson+Kawaguchiko+Station" target="_blank" class="btn-map">Lawson 地圖</a>
+                </div>
+            </div>
+            <div class="event">
+                <div class="dot"></div>
+                <div class="card">
+                    <div class="tag-row"><span class="time-badge">09:30</span><span class="type-badge type-spot">景點</span></div>
+                    <h3>忍野八海</h3>
+                    <p>清澈湧泉與茅草屋</p>
+                    <div class="img-box"><img src="https://images.weserv.nl/?url=res.klook.com/images/fl_lossy.progressive,q_65/c_fill,w_700,h_466/w_43,x_8,y_8,g_south_west,l_Klook_water_br_trans_yhcmh3/activities/vwzqfiny7vyb1be34iil/%E6%BC%AB%E9%81%8A%E5%AF%8C%E5%A3%AB%E5%B1%B1%E5%BF%8D%E9%87%8E%E5%85%AB%E6%B5%B7%E5%BE%A1%E6%AE%BF%E5%A0%B4OUTLETS%E4%B8%80%E6%97%A5%E9%81%8A.jpg&w=800&h=400&fit=cover" alt="Oshino"></div>
+                    <a href="https://www.google.com/maps/search/?api=1&query=Oshino+Hakkai" target="_blank" class="btn-map">Google Maps 導航</a>
+                </div>
+            </div>
+            <div class="event">
+                <div class="dot"></div>
+                <div class="card">
+                    <div class="tag-row"><span class="time-badge">13:30</span><span class="type-badge type-spot">體驗</span></div>
+                    <h3>山中湖 KABA 巴士</h3>
+                    <div class="change-box">
+                        <span class="old-plan">原定：天鵝湖遊覽船</span>
+                        <span class="new-plan">變更：KABA 水陸兩用巴士 (推薦)</span>
+                    </div>
+                    <p>可直接衝入湖中的特殊體驗</p>
+                    <div class="img-box contain" style="background:white;"><img style="object-fit:contain;" src="https://images.weserv.nl/?url=www.kaba-bus.com/img/default/img_vehicle_specifications_kaba2.png" alt="KABA"></div>
+                    <a href="https://www.google.com/maps/search/?api=1&query=Yamanakako+KABA" target="_blank" class="btn-map">導航至搭乘處</a>
+                </div>
+            </div>
+            <div class="event">
+                <div class="dot"></div>
+                <div class="card">
+                    <div class="tag-row"><span class="time-badge">14:30</span><span class="type-badge type-shop">購物</span></div>
+                    <h3>星巴克 富士吉田店</h3>
+                    <p>Kimo 買杯子行程 (停留 30 分)</p>
+                    <a href="https://www.google.com/maps/search/?api=1&query=Starbucks+Fujiyoshida" target="_blank" class="btn-map">Google Maps 導航</a>
+                </div>
+            </div>
+            <div class="event">
+                <div class="dot"></div>
+                <div class="card">
+                    <div class="tag-row"><span class="time-badge">15:00</span><span class="type-badge type-spot">參觀</span></div>
+                    <h3>山梨縣立富士山世界遺產中心</h3>
+                    <p>位於河口湖側 (南館/北館)</p>
+                    <div class="img-box"><img src="https://images.weserv.nl/?url=www.fujisan-whc.jp/images/gal_img2.jpg&w=800&h=400&fit=cover" alt="Yamanashi WHC"></div>
+                    <a href="https://www.google.com/maps/search/?api=1&query=Yamanashi+Prefectural+Fujisan+World+Heritage+Center" target="_blank" class="btn-map">Google Maps 導航</a>
+                </div>
+            </div>
+            <div class="event optional">
+                <div class="dot"></div>
+                <div class="card optional">
+                    <div class="tag-row"><span class="time-badge">備案</span><span class="type-badge">選項</span></div>
+                    <h3>大石公園 (若時間允許)</h3>
+                    <p>試算表備註：若時間充裕可提前至今日參觀 (灰色行程)</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="day4" class="day-section">
+        <div class="day-header"><span class="day-title">Day 4</span><span class="day-date">1/19 (Mon)</span></div>
+        <div class="timeline">
+            <div class="event">
+                <div class="dot"></div>
+                <div class="card">
+                    <div class="tag-row"><span class="time-badge">09:00</span><span class="type-badge type-spot">景點</span></div>
+                    <h3>河口湖天上山公園</h3>
+                    <p>搭乘纜車俯瞰全景</p>
+                    <div class="img-box"><img src="https://images.weserv.nl/?url=www.mtfujiropeway.jp/cqotof0000000con-img/main_panel_pc20220330_3.jpg&w=800&h=400&fit=cover" alt="Ropeway"></div>
+                    <a href="https://www.google.com/maps/search/?api=1&query=Mt.+Fuji+Panoramic+Ropeway" target="_blank" class="btn-map">Google Maps 導航</a>
+                </div>
+            </div>
+            <div class="event">
+                <div class="dot"></div>
+                <div class="card">
+                    <div class="tag-row"><span class="time-badge">10:00</span><span class="type-badge type-shop">購物</span></div>
+                    <h3>Fujiyama Cookie</h3>
+                    <p>購買著名的富士山餅乾</p>
+                    <div class="img-box"><img src="https://images.weserv.nl/?url=www.fujiyamacookie.jp/a68089000000024f-img/top_mv.jpg&w=800&h=400&fit=cover" alt="Cookie"></div>
+                    <a href="https://www.google.com/maps/search/?api=1&query=LocationName9" target="_blank" class="btn-map">Google Maps 導航</a>
+                </div>
+            </div>
+            <div class="event">
+                <div class="dot"></div>
+                <div class="card">
+                    <div class="tag-row"><span class="time-badge">10:30</span><span class="type-badge type-spot">景點</span></div>
+                    <h3>大石公園 (正式行程)</h3>
+                    <p>河口湖畔花園，拍攝富士山全景</p>
+                    <div class="img-box"><img src="https://images.weserv.nl/?url=littleskyworld.com/wp-content/uploads/2020/02/IMG_9316-scaled.jpg&w=800&h=400&fit=cover" alt="Oishi"></div>
+                    <a href="https://www.google.com/maps/search/?api=1&query=Oishi+Park" target="_blank" class="btn-map">Google Maps 導航</a>
+                </div>
+            </div>
+            <div class="event">
+                <div class="dot"></div>
+                <div class="card">
+                    <div class="tag-row"><span class="time-badge">12:30</span><span class="type-badge type-move">移動</span></div>
+                    <h3>往靜岡方向移動 (中途停靠)</h3>
+                    <p>沿途順遊景點：</p>
+                    <div class="details">
+                        <div class="detail-item">1. 西湖根場濱 (拍照)</div>
+                        <div class="detail-item">2. 朝霧高原 道之站 (買牛奶冰淇淋/休息)</div>
+                    </div>
+                </div>
+            </div>
+            <div class="event highlight">
+                <div class="dot"></div>
+                <div class="card">
+                    <div class="tag-row"><span class="time-badge">15:00</span><span class="type-badge type-spot">重點</span></div>
+                    <h3>靜岡縣富士山世界遺產中心</h3>
+                    <div class="change-box">
+                        <span class="old-plan">原定：白絲瀑布</span>
+                        <span class="new-plan">變更：遺產中心 (倒富士) + 淺間大社</span>
+                    </div>
+                    <p>參觀坂茂設計倒富士建築</p>
+                    <div class="img-box"><img src="https://images.weserv.nl/?url=mtfuji-whc.jp/wp/wp-content/uploads/2024/05/8ecc40510ce3b03092393810f3d5eeef-scaled-e1715754192687.jpg&w=800&h=400&fit=cover" alt="Shizuoka WHC"></div>
+                    <a href="https://www.google.com/maps/search/?api=1&query=Mt.+Fuji+World+Heritage+Centre,+Shizuoka" target="_blank" class="btn-map">Google Maps 導航</a>
+                </div>
+            </div>
+            <div class="event">
+                <div class="dot"></div>
+                <div class="card">
+                    <div class="tag-row"><span class="time-badge">16:00</span><span class="type-badge type-spot">拍照</span></div>
+                    <h3>富士山夢之大橋</h3>
+                    <p>IG 熱門階梯構圖 (順路)</p>
+                    <div class="img-box"><img src="https://images.weserv.nl/?url=cdn.getyourguide.com/img/tour/67e3f03ebffd885f0f3a8119b0abfd33704e54404494c2c840d749c877c3f9d4.jpg/146.jpg&w=800&h=400&fit=cover" alt="Dream Bridge"></div>
+                    <a href="https://www.google.com/maps/search/?api=1&query=Fujisan+Yumeno+Ohashi" target="_blank" class="btn-map">Google Maps 導航</a>
+                </div>
+            </div>
+            <div class="event highlight">
+                <div class="dot"></div>
+                <div class="card">
+                    <div class="tag-row"><span class="time-badge">17:15</span><span class="type-badge type-move">還車</span></div>
+                    <h3>還車：Toyota Rent-A-Car 新富士站</h3>
+                    <p>完成還車手續</p>
+                    <a href="https://www.google.com/maps/search/?api=1&query=Toyota+Rent+a+Car+Shin-Fuji" target="_blank" class="btn-map">Google Maps 導航</a>
+                </div>
+            </div>
+            <div class="event">
+                <div class="dot"></div>
+                <div class="card">
+                    <div class="tag-row"><span class="time-badge">17:41</span><span class="type-badge type-move">新幹線</span></div>
+                    <h3>新幹線 Kodama 736</h3>
+                    <p>新富士站 ➝ 品川站</p>
+                    <div class="details">
+                        <div class="detail-item">票價：¥5,500/人</div>
+                        <div class="detail-item">晚餐：19:30 與甲斐、內橋先生聚餐 (品川)</div>
+                    </div>
+                </div>
+            </div>
+            <div class="event">
+                <div class="dot"></div>
+                <div class="card">
+                    <div class="tag-row"><span class="time-badge">Stay</span><span class="type-badge type-stay">住宿</span></div>
+                    <h3>品川王子大飯店</h3>
+                    <p>Shinagawa Prince Hotel</p>
+                    <a href="https://www.google.com/maps/search/?api=1&query=Shinagawa+Prince+Hotel" target="_blank" class="btn-map">Google Maps 導航</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="day5" class="day-section">
+        <div class="day-header"><span class="day-title">Day 5</span><span class="day-date">1/20 (Tue)</span></div>
+        <div class="timeline">
+            <div class="event">
+                <div class="dot"></div>
+                <div class="card">
+                    <div class="tag-row"><span class="time-badge">14:49</span><span class="type-badge type-move">機場快線</span></div>
+                    <h3>成田特快 N'EX 35號</h3>
+                    <p>品川站 ➝ 成田機場 T1</p>
+                    <div class="details"><div class="detail-item">票價：¥3,250/人</div></div>
+                </div>
+            </div>
+            <div class="event">
+                <div class="dot"></div>
+                <div class="card">
+                    <div class="tag-row"><span class="time-badge">17:50</span><span class="type-badge type-move">飛行</span></div>
+                    <h3>航班 UA 837</h3>
+                    <p>成田 (NRT) ➝ 高雄 (KHH)</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="emergency-section">
+        <div class="emergency-title">緊急聯絡資訊</div>
+        <div class="emergency-grid">
+            <a href="tel:110" class="sos-btn"><span>110</span>警察局</a>
+            <a href="tel:119" class="sos-btn"><span>119</span>救護車/消防</a>
+            <a href="tel:+81332225555" class="sos-btn" style="font-size:12px; color:#666;">駐日代表處<br>03-3280-7111</a>
+            <a href="#" class="sos-btn" style="font-size:12px; color:#666;">租車公司<br>(詳見合約)</a>
+        </div>
+    </div>
+
+</div>
+
+<div class="bottom-nav">
+    <div class="nav-scroll">
+        <div onclick="switchDay('day1')" class="nav-item active" id="tab-day1">Day 1</div>
+        <div onclick="switchDay('day2')" class="nav-item" id="tab-day2">Day 2</div>
+        <div onclick="switchDay('day3')" class="nav-item" id="tab-day3">Day 3</div>
+        <div onclick="switchDay('day4')" class="nav-item" id="tab-day4">Day 4</div>
+        <div onclick="switchDay('day5')" class="nav-item" id="tab-day5">Day 5</div>
+    </div>
+    <a href="https://drive.google.com/open?id=1-3QiVrIIg3SZjg5MCdYkPIyw4_UwgwxaWYjnTV-VOwc" target="_blank" class="sheet-btn">詳細行程表</a>
+</div>
+
+<script>
+    function switchDay(dayId) {
+        document.querySelectorAll('.day-section').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+        document.getElementById(dayId).classList.add('active');
+        document.getElementById('tab-' + dayId).classList.add('active');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    switchDay('day4');
+</script>
+
+</body>
+</html>
