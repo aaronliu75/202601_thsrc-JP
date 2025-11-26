@@ -33,7 +33,7 @@
         header {
             position: relative;
             height: 340px;
-            /* 使用您指定的纜車照片作為封面，經過代理轉發確保顯示 */
+            /* ★ 已更換為您指定的 upload.cc 富士山照片 ★ */
             background-image: url('https://images.weserv.nl/?url=upload.cc/i1/2025/11/26/tZq5HT.jpg&w=1000&output=jpg');
             background-size: cover;
             background-position: center;
@@ -472,7 +472,7 @@
                 <div class="card">
                     <div class="tag-row"><span class="time-badge">17:41</span><span class="type-badge type-move">新幹線</span></div>
                     <h3>新幹線 Kodama 736</h3>
-                    <p>新富士 ➝ 品川</p>
+                    <p>新富士站 ➝ 品川</p>
                     <div class="details">
                         <div class="detail-item">票價：¥5,500/人</div>
                         <div class="detail-item">晚餐：19:30 與甲斐、內橋先生聚餐 (品川)</div>
@@ -499,7 +499,7 @@
                 <div class="card">
                     <div class="tag-row"><span class="time-badge">14:49</span><span class="type-badge type-move">機場快線</span></div>
                     <h3>成田特快 N'EX 35號</h3>
-                    <p>品川 ➝ 成田機場 T1</p>
+                    <p>品川站 ➝ 成田機場 T1</p>
                     <div class="details"><div class="detail-item">票價：¥3,250/人</div></div>
                 </div>
             </div>
@@ -514,7 +514,15 @@
         </div>
     </div>
 
-  
+    <div class="emergency-section">
+        <div class="emergency-title">緊急聯絡資訊</div>
+        <div class="emergency-grid">
+            <a href="tel:110" class="sos-btn"><span>110</span>警察局</a>
+            <a href="tel:119" class="sos-btn"><span>119</span>救護車/消防</a>
+            <a href="tel:+81332225555" class="sos-btn" style="font-size:12px; color:#666;">駐日代表處<br>03-3280-7111</a>
+            <a href="#" class="sos-btn" style="font-size:12px; color:#666;">租車公司<br>(詳見合約)</a>
+        </div>
+    </div>
 
 </div>
 
@@ -537,7 +545,7 @@
         document.getElementById('tab-' + dayId).classList.add('active');
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
-    switchDay('day1');
+    switchDay('day4');
 </script>
 
 </body>
